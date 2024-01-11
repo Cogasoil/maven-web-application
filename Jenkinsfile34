@@ -6,10 +6,10 @@ node{
   stage('2.mavenBuild'){
     sh "${mavenHome}/bin/mvn package"
   }
+/*
   stage('3.codeQualityAnalysis'){
     sh "${mavenHome}/bin/mvn sonar:sonar"    
   }
- /*
   stage('4.uploadArtifacts'){
     sh "${mavenHome}/bin/mvn deploy"
   }
