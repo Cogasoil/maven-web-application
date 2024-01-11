@@ -9,7 +9,7 @@ node{
   stage('3.codeQualityAnalysis'){
     sh "${mavenHome}/bin/mvn sonar:sonar"    
   }
- 
+ /*
   stage('4.uploadArtifacts'){
     sh "${mavenHome}/bin/mvn deploy"
   }
@@ -42,4 +42,5 @@ Regards,
 Landmark Technologies''', recipientProviders: [developers(), upstreamDevelopers(), buildUser()], subject: 'job status', to: 'mylandmarktech@gmail.com'
 
   }
+*/
 }
