@@ -1,0 +1,81 @@
+node{
+    def mavenHome = tool name: 'maven3.9.6'
+      stage('1.CloneCode'){
+      git "https://github.com/Cogasoil/maven-web-application"
+     }
+      stage('2.mvnBuild'){
+      sh "${mavenHome}/bin/mvn package"
+      }
+      stage('3.CodeQuality'){
+      sh "${mavenHome}/bin/mvn sonar:sonar"
+      }
+      stage('4.UploadArtifacts'){
+      sh "${mavenHome}/bin/mvn deploy"
+      }
+      stage('5.Deploy2UAT'){
+      deploy adapters: [tomcat9(credentialsId: 'tomcatcredential', path: '', url: 'http://54.226.13.70:8080/')], contextPath: null, war: 'target/*war'
+      }
+      stage('6.ManualApproval'){
+      sh " echo 'Please review & approve' "
+      timeout(time:300, unit:'MINUTES')
+     {
+      input message: 'Application ready for deployment, Please review and approve'
+     }       
+      }
+      stage('7.Deploy2Prod'){
+      //use deploy to container plugin
+      deploy adapters: [tomcat9(credentialsId: 'tomcatcredential', path: '', url: 'http://54.226.13.70:8080/')], contextPath: null, war: 'target/*war' 
+      }
+       stage('8.apm'){
+      sh "echo 'monitoring and observation and alerting' "
+      sh "echo 'application performance Monitoring in progress' "
+      }
+      stage('9.notification'){
+    sh "echo create email notification to resolve any issue that may arise"
+    //use pipeline syntax and email notification plugin to achieve this  
+    emailext body: '''The build and Deployment status for telsa-webapp.
+
+    Regards,
+    Landmark Technologies''', recipientProviders: [upstreamDevelopers(), developers()], subject: 'job status', to: 'dianaumoh@gmail.com'
+     }
+    }node{
+    def mavenHome = tool name: 'maven3.9.6'
+      stage('1.CloneCode'){
+      git "https://github.com/Cogasoil/maven-web-application"
+     }
+      stage('2.mvnBuild'){
+      sh "${mavenHome}/bin/mvn package"
+      }
+      stage('3.CodeQuality'){
+      sh "${mavenHome}/bin/mvn sonar:sonar"
+      }
+      stage('4.UploadArtifacts'){
+      sh "${mavenHome}/bin/mvn deploy"
+      }
+      stage('5.Deploy2UAT'){
+      deploy adapters: [tomcat9(credentialsId: 'tomcatcredential', path: '', url: 'http://54.226.13.70:8080/')], contextPath: null, war: 'target/*war'
+      }
+      stage('6.ManualApproval'){
+      sh " echo 'Please review & approve' "
+      timeout(time:300, unit:'MINUTES')
+     {
+      input message: 'Application ready for deployment, Please review and approve'
+     }       
+      }
+      stage('7.Deploy2Prod'){
+      //use deploy to container plugin
+      deploy adapters: [tomcat9(credentialsId: 'tomcatcredential', path: '', url: 'http://54.226.13.70:8080/')], contextPath: null, war: 'target/*war' 
+      }
+       stage('8.apm'){
+      sh "echo 'monitoring and observation and alerting' "
+      sh "echo 'application performance Monitoring in progress' "
+      }
+      stage('9.notification'){
+    sh "echo create email notification to resolve any issue that may arise"
+    //use pipeline syntax and email notification plugin to achieve this  
+    emailext body: '''The build and Deployment status for telsa-webapp.
+
+    Regards,
+    Landmark Technologies''', recipientProviders: [upstreamDevelopers(), developers()], subject: 'job status', to: 'dianaumoh@gmail.com'
+     }
+    }
